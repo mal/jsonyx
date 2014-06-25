@@ -1,0 +1,32 @@
+#! /usr/bin/env node
+
+var argv = require('minimist')(process.argv.slice(2));
+var repl = require('repl');
+var ttys = require('ttys');
+
+if (argv.c || argv.coffee) {
+    try {
+        repl = require('coffee-script/lib/coffee-script/repl');
+    } catch (e) {
+        console.log('coffee-script not installed, falling back to standard REPL');
+    }
+}
+
+var json = '';
+
+process.stdin.on('data', function (chunk) {
+    json += chunk;
+});
+
+process.stdin.on('end', function () {
+    cli = repl.start({
+        input: ttys.stdin,
+        output: ttys.stdout,
+//         prompt: '> ',
+        terminal: true
+    });
+    cli.context.data = JSON.parse(json);
+    cli.on('exit', function () {
+        process.exit();
+    });
+});

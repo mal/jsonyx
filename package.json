@@ -1,0 +1,36 @@
+{
+  "name": "jsonyx",
+  "version": "0.0.1",
+  "description": "A lightweight unix json workbench",
+  "keywords": [
+    "json",
+    "pipe",
+    "repl",
+    "unix"
+  ],
+  "homepage": "https://github.com/mal/jsonyx",
+  "bugs": {
+    "url": "https://github.com/mal/jsonyx/issues"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Mal Graty",
+    "email": "mal.graty@googlemail.com"
+  },
+  "bin": "./bin/jsonyx",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mal/jsonyx.git"
+  },
+  "dependencies": {
+    "ttys": "~0.0.3",
+    "minimist": "~0.2.0"
+  },
+  "optionalDependencies": {
+    "coffee-script": "~1.7.1"
+  },
+  "os": [
+    "!win32"
+  ],
+  "preferGlobal": true
+}
