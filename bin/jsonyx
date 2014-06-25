@@ -1,14 +1,54 @@
 #! /usr/bin/env node
 
-var argv = require('minimist')(process.argv.slice(2));
+var args = require('minimist');
+var os = require('os');
 var repl = require('repl');
 var ttys = require('ttys');
 
-if (argv.c || argv.coffee) {
+function help() {
+    console.warn([
+        'usage: cat | jsonyx [options]',
+        '',
+        '  -c, --coffee    use coffee-script\'s REPL if installed',
+        '  -h, --help      this message',
+        '  -l, --lines     treat each line as a separate JSON stream'
+    ].join(os.EOL));
+    process.exit(1);
+}
+
+function parse(data, lines) {
+    try {
+        if (lines)
+            return data.split(os.EOL)
+                       .filter(function (a) { return a; })
+                       .map(JSON.parse);
+        else
+            return JSON.parse(data);
+    } catch (e) {
+        console.error('Error while parsing JSON: ' + e.message);
+        process.exit(1);
+    }
+}
+
+var argv = args(process.argv.slice(2), {
+    'alias': { 'c': 'coffee', 'h': 'help', 'l': 'lines' }
+});
+
+if (argv.help) help();
+
+if (process.stdin.isTTY) {
+    console.error('Expecting a JSON stream to be piped in via stdin!');
+    process.exit(1);
+}
+
+if (argv.coffee) {
     try {
         repl = require('coffee-script/lib/coffee-script/repl');
     } catch (e) {
-        console.log('coffee-script not installed, falling back to standard REPL');
+        console.warn(
+            'warn: coffee-script not installed, '
+          + 'falling back to standard REPL'
+        );
     }
 }
 
@@ -19,13 +59,13 @@ process.stdin.on('data', function (chunk) {
 });
 
 process.stdin.on('end', function () {
+    var data = parse(json, argv.lines);
     cli = repl.start({
         input: ttys.stdin,
         output: ttys.stdout,
-//         prompt: '> ',
-        terminal: true
+        prompt: '> '
     });
-    cli.context.data = JSON.parse(json);
+    cli.context.data = data;
     cli.on('exit', function () {
         process.exit();
     });
