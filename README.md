@@ -3,6 +3,15 @@
 A lightweight interactive JSON parser/inspector that leverages the full
 power of Node.js, or for those that prefer: CoffeeScript.
 
+## Install
+
+It's recommended to install `jsonyx` globally so it can be used from
+anywhere.
+
+```
+sudo npm install -g jsonyx
+```
+
 ## Example
 
 Typical usage might look something like this, where the `curl` is
